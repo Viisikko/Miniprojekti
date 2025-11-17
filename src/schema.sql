@@ -1,4 +1,4 @@
-CREATE TABLE references (
+CREATE TABLE viitteet (
   id SERIAL PRIMARY KEY,
 
   /* Pääasialliset metatiedot*/
