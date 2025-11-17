@@ -1,0 +1,14 @@
+body{
+    font-family: sans-serif;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+    max-width: 20rem;
+
+    input[type="submit"]{
+        margin-top: 1rem;
+    }
+}

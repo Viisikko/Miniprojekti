@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <form class="login" action="/" method="post">
+        <label for="username">Käyttäjätunnus</label>
+        <input type="text" name="username" placeholder="outi">
+        <label for="password">Salasana</label>
+        <input type="password" name="password" placeholder="********">
+        <input type="submit" value="Kirjaudu">
+    </form>
+</body>
