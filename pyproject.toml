@@ -2,10 +2,8 @@
 name = "miniprojekti-boilerplate"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Matti Luukkainen",email = "mluukkai@iki.fi"}
-]
-license = {text = "MIT"}
+authors = []
+license = {text = "AGPL-3.0"}
 requires-python = "^3.12"
 dependencies = [
     "flask (>=3.1.2,<4.0.0)",
