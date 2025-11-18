@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>New reference</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <h1>New reference</h1>
+  <form action="/create_reference" method="post">
+    <p>
+      Title *<br />
+      <input type="text" name="title" minlength="1" maxlength="64" required/>
+    </p>
+    <p>
+        Reference type: *<br/>
+        <select name="type" required>
+          <option value="book">Book</option>
+        </select>
+    </p>
+    <p>
+        Year: *<br/>
+        <input type="number" min="868" max="2099" step="1" value="2025" name="year" required/>
+    </p>
+    <p>
+      Authors (separated by comma) *<br/>
+      <input type="text" name="author" minlength="3" required/>
+    </p>
+    
+    <input type="submit" value="Create reference" />
+  </form>
+  <a href="/">Back to Main Page</a>
+</body>
+
+</html>

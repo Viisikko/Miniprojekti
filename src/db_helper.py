@@ -1,10 +1,11 @@
 from config import db, app
 from sqlalchemy import text
+from flask import g
 import os
 
 def reset_db():
   print(f"Resetting db")
-  sql = text(f"DELETE FROM references")
+  sql = text(f"DELETE FROM viitteet")
   db.session.execute(sql)
   db.session.commit()
 
@@ -43,6 +44,38 @@ def setup_db():
   sql = text(schema_sql)
   db.session.execute(sql)
   db.session.commit()
+
+def execute(sql, params=None):
+    if params is None:
+        params = {}
+
+    result = db.session.execute(text(sql), params)
+    db.session.commit()
+
+    last_id = None
+    try:
+        row = result.fetchone()
+        if row is not None:
+            last_id = row[0]
+    except Exception:
+        pass
+
+    g.last_insert_id = last_id
+    return result.rowcount
+
+
+def last_insert_id():
+    return getattr(g, "last_insert_id", None)
+
+
+def query(sql, params=None):
+    if params is None:
+        params = {}
+
+    result = db.session.execute(text(sql), params)
+    rows = result.mappings().all()
+    return rows
+
 
 if __name__ == "__main__":
     with app.app_context():
