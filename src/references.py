@@ -6,3 +6,7 @@ def add_reference(title,type,year,author):
         db_helper.execute(sql, {"title": title, "type": type, "year": year, "author": authors})
 
         return db_helper.last_insert_id()
+
+def get_all_references():
+    sql = "SELECT * FROM viitteet ORDER BY id"
+    return db_helper.query(sql)
