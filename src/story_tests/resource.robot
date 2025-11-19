@@ -6,7 +6,7 @@ ${SERVER}     localhost:5001
 ${DELAY}      0.5 seconds
 ${HOME_URL}   http://${SERVER}
 ${RESET_URL}  http://${SERVER}/reset_db
-${BROWSER}    chrome
+${BROWSER}    firefox
 ${HEADLESS}   false
 
 *** Keywords ***
