@@ -17,7 +17,8 @@ def require_login():
 @app.route("/")
 @require_login()
 def index():
-    return render_template("index.html")
+    references_list = references.get_all_references()
+    return render_template("index.html", references=references_list)
 
 @app.route("/", methods=["POST"])
 def login_post():
