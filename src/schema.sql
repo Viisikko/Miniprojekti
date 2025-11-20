@@ -3,10 +3,12 @@ CREATE TABLE viitteet (
 
   /* Pääasialliset metatiedot*/
   type TEXT NOT NULL,
+  index TEXT NOT NULL,
   year INTEGER NOT NULL,
   title TEXT NOT NULL,
   author TEXT[] NOT NULL,
   publisher TEXT,
+  revision TEXT,
 
   /* Erinäiset tunnisteet */
   doi TEXT,
