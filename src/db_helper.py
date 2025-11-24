@@ -57,13 +57,17 @@ def execute(sql, params=None):
         row = result.fetchone()
         if row is not None:
             last_id = row[0]
+    # Voitaisiin vaan nostaa exception tässä ja handlata virhe ylempänä
+    # Suoraan kaikkien virheiden catchaaminen on yleisesti ottaen myös vaan bad practice
     except Exception:
         pass
-
+    
+    # TODO: Palauta tuplena (result.rowcount, last_id) ratkaistakseen ongelmat last_insert_id() toteuksen kanssa
     g.last_insert_id = last_id
     return result.rowcount
 
 
+# WARNING: Tän käyttö saattaa aiheuttaa race-conditionin
 def last_insert_id():
     return getattr(g, "last_insert_id", None)
 

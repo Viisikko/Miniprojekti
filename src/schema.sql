@@ -3,12 +3,13 @@ CREATE TABLE viitteet (
 
   /* Pääasialliset metatiedot*/
   type TEXT NOT NULL,
-  index TEXT NOT NULL,
+  index TEXT UNIQUE NOT NULL,
   year INTEGER NOT NULL,
   title TEXT NOT NULL,
   author TEXT[] NOT NULL,
   publisher TEXT,
   revision TEXT,
+  journal TEXT,
 
   /* Erinäiset tunnisteet */
   doi TEXT,
@@ -18,13 +19,26 @@ CREATE TABLE viitteet (
   /*
   Mahdolliset kentät viitetyypeille
 
-  book:
+  common:
     year
     title
     author
+    uri
+
+  book:
     publisher
     doi
     isbn
-    uri
+  
+  article:
+    journal
+    doi
+
+  Työn alla:
+  
+  inproceedings:
+    booktitle
+    organization
+    publisher
   */
 )

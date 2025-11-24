@@ -1,7 +1,9 @@
 from flask import redirect, render_template, request, jsonify, flash, url_for, g, session
-from config import app, test_env, user
+from config import app, test_env, user, db
 from functools import wraps
 import references
+from sqlalchemy import text
+
 
 def require_login():
     def login_wrapper(f):
@@ -14,11 +16,13 @@ def require_login():
         return decorated_f
     return login_wrapper
 
+
 @app.route("/")
 @require_login()
 def index():
     references_list = references.get_all_references()
     return render_template("index.html", references=references_list)
+
 
 @app.route("/", methods=["POST"])
 def login_post():
@@ -28,28 +32,34 @@ def login_post():
             return redirect(url_for("index"), 302)
     return "Väärä käyttäjätunnus tai salasana", 403
 
+
 @app.route("/login")
 def login():
     return render_template("login.html")
+
 
 @app.route("/add_reference")
 @require_login()
 def add_reference():
     return render_template("add_reference.html")
 
+
 @app.route("/create_reference", methods=["POST"])
 @require_login()
 def create_reference():
-    title = request.form.get("title", "").strip()
-    type_ = request.form.get("type", "").strip()
-    year_raw = request.form.get("year", "").strip()
-    author = request.form.get("author", "").strip()
+    def get_param(x): return request.form.get(x, "").strip()
+
+    title = get_param("title")
+    reference_type = get_param("type")
+    year_raw = get_param("year")
+    author = get_param("author")
+    index = get_param("index")
+    isbn = get_param("isbn")
+    doi = get_param("doi")
+    journal = get_param("journal")
 
     if not title or len(title) > 64:
         return "Error: Title must be between 1 and 64 characters.<br> <a href='/add_reference'>Return to reference creation</a>"
-
-    if not type_ or type_ != "book":
-        return "Error: Invalid type.<br> <a href='/add_reference'>Return to reference creation</a>"
 
     if not year_raw:
         return "Error: Year is required.<br> <a href='/add_reference'>Return to reference creation</a>"
@@ -61,13 +71,26 @@ def create_reference():
 
     if year < 868 or year > 2099:
         return "Error: Year cannot be under 868 or too much in the future.<br> <a href='/add_reference'>Return to reference creation</a>"
-    
-    if not author or len(author)<3:
+
+    if not author or len(author) < 3:
         return "Error: Author must be at least 3 characters long.<br> <a href='/add_reference'>Return to reference creation</a>"
-    
-    reference_id=references.add_reference(title, type_, year, author)
+
+    reference_id = None
+
+    match reference_type:
+        case "book":
+            reference_id = references.add_reference(
+                index, title, reference_type, year, author)
+        case "article":
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, doi, journal) VALUES (:index, :title, :type, :year, :author, :doi, :journal) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "doi": doi, "journal": journal})
+            db.session.commit()
+            reference_id = result.fetchone()
+        case "misc":
+            pass
+        case _:
+            return "Epäkelpo viitetyyppi", 400
 
     if not reference_id:
         return "Error: Could not create reference", 500
-    
     return redirect("/")

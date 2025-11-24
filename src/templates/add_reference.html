@@ -3,34 +3,75 @@
 
 <head>
   <title>New reference</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='compiled.css') }}">
+  <script src="{{ url_for('static', filename='add_reference_form.js') }}"></script>
 </head>
 
 <body>
+  <div class="main-container">
     <h1>New reference</h1>
-  <form action="/create_reference" method="post">
-    <p>
-      Title *<br />
-      <input type="text" name="title" minlength="1" maxlength="64" required/>
-    </p>
-    <p>
-        Reference type: *<br/>
-        <select name="type" required>
+  
+    <form action="/create_reference" method="post" class="add_reference">
+      <p>
+        Title *<br />
+        <input type="text" name="title" minlength="1" maxlength="64" required />
+      </p>
+      <p>
+        Reference type: *<br />
+        <select name="type" required onchange="handle_reftype()">
+          <option disabled selected value>Select a type</option>
           <option value="book">Book</option>
+          <option value="article">Article</option>
+          <option value="misc">Misc</option>
         </select>
-    </p>
-    <p>
-        Year: *<br/>
-        <input type="number" min="868" max="2099" step="1" value="2025" name="year" required/>
-    </p>
-    <p>
-      Authors (separated by comma) *<br/>
-      <input type="text" name="author" minlength="3" required/>
-    </p>
-    
-    <input type="submit" value="Create reference" />
-  </form>
-  <a href="/">Back to Main Page</a>
+      </p>
+      <p>
+        Year: *<br />
+        <input type="number" min="868" max="2099" step="1" value="2025" name="year" required />
+      </p>
+      <p>
+        Authors (separated by comma) *<br />
+        <input type="text" name="author" minlength="3" required />
+      </p>
+      <p>
+        Index *<br />
+        <input type="text" name="index" minlength="3" required />
+        <button type="button" onclick="generate_index()">Use generated</button>
+      </p>
+
+      <p class="book type-specific">
+        Publisher <br />
+        <input type="text" name="publisher" />
+      </p>
+
+      <p class="article type-specific">
+        Journal <br />
+        <input type="text" name="journal" />
+      </p>
+
+      <p class="book type-specific">
+        ISBN <br />
+        <input type="text" name="isbn" />
+      </p>
+
+      <p class="article book type-specific">
+        DOI <br />
+        <input type="text" name="doi" />
+      </p>
+
+      <p>
+        URL <br />
+        <input type="text" name="url" />
+      </p>
+
+
+      <input type="submit" value="Create reference" class="primary-button" />
+    </form>
+    <a href="/">Back to Main Page</a>
+  </div>
 </body>
 
 </html>

@@ -1,7 +1,3 @@
-body{
-    font-family: sans-serif;
-}
-
 .login {
     display: flex;
     flex-direction: column;
@@ -11,4 +7,19 @@ body{
     input[type="submit"]{
         margin-top: 1rem;
     }
+}
+
+form.add_reference[rtype="article"] > .type-specific.article{
+    display: block;
+    visibility: visible;
+}
+
+form.add_reference[rtype="book"] > .type-specific.book{
+    display: block;
+    visibility: visible;
+}
+
+form.add_reference > .type-specific{
+    display: none;
+    visibility: hidden;
 }
