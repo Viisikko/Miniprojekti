@@ -1,7 +1,8 @@
-from flask import redirect, render_template, request, jsonify, flash, url_for, g, session
+from flask import redirect, render_template, request, jsonify, flash, url_for, g, session, send_file
 from config import app, test_env, user, db
 from functools import wraps
 import references
+import generate_bibtex
 from sqlalchemy import text
 
 
@@ -94,3 +95,11 @@ def create_reference():
     if not reference_id:
         return "Error: Could not create reference", 500
     return redirect("/")
+
+
+@app.route("/export_bibtex")
+@require_login()
+def export_bibtex():
+    output_path = "references_export.bib"
+    generate_bibtex.export_viitteet_to_bibtex(output_path)
+    return send_file(output_path, as_attachment=True)
