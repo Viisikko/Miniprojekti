@@ -1,4 +1,3 @@
-from pathlib import Path
 from db_helper import query
 
 COLUMN_TO_BIBTEX = {
@@ -11,6 +10,7 @@ COLUMN_TO_BIBTEX = {
     "booktitle": "booktitle",
     "organization": "organization",
 }
+
 
 def escape_bibtex_value(value: str) -> str:
     if value is None:
@@ -51,19 +51,17 @@ def row_to_bibtex(row: dict) -> str:
         val_str = escape_bibtex_value(value)
         lines.append(f"  {field} = {{{val_str}}},")
 
-
     lines.append("}")
     return "\n".join(lines)
 
 
 def export_viitteet_to_bibtex(
-    output_path: str | Path,
     where_clause: str | None = None,
     params: dict | None = None,
-) -> int:
-    output_path = Path(output_path)
-
+) -> str:
     sql = "SELECT * FROM viitteet"
+
+    # Tää johtaa SQL-injektioon jos where_clause on käyttäjän hallittavissa
     # Filtteröintiä varten jatkossa
     if where_clause:
         sql += " WHERE " + where_clause
@@ -71,8 +69,7 @@ def export_viitteet_to_bibtex(
 
     rows = query(sql, params or {})
 
-    entries = [row_to_bibtex(row) for row in rows]
+    entries = [row_to_bibtex(row) for row in rows] # type: ignore
     content = "\n\n".join(entries) + ("\n" if entries else "")
 
-    output_path.write_text(content, encoding="utf-8")
-    return len(entries)
+    return content

@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, jsonify, flash, url_for, g, session, send_file
+from flask import redirect, render_template, request, jsonify, flash, url_for, g, session, send_file, Response
 from config import app, test_env, user, db
 from functools import wraps
 import references
@@ -100,6 +100,8 @@ def create_reference():
 @app.route("/export_bibtex")
 @require_login()
 def export_bibtex():
-    output_path = "references_export.bib"
-    generate_bibtex.export_viitteet_to_bibtex(output_path)
-    return send_file(output_path, as_attachment=True)
+    bibtex_output = generate_bibtex.export_viitteet_to_bibtex()
+    response = Response(bibtex_output)
+    response.headers["Content-Disposition"] = f"attachment; filename=references_export.bib"
+    response.headers["Content-Type"] = f"text/x-bibtex"
+    return response
