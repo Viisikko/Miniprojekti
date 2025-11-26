@@ -7,14 +7,16 @@ Suite Teardown  Close Browser
 ${VALID_USERNAME}    outi
 ${VALID_PASSWORD}    12345
 
+
 *** Test Cases ***
 Create Reference With Valid Data
     Go To Add Reference Page
     Fill Reference Form
-    ...    title=Clean Code
+    ...    title=Clean Testing
     ...    type=book
     ...    year=2008
     ...    author=Robert C. Martin
+    ...    index=RobertC.Martin2008
     Submit Reference Form Normally
     Wait Until Location Is    ${HOME_URL}/    5s
     Page Should Not Contain    Error:
@@ -27,6 +29,7 @@ Create Reference Fails With Empty Title
     ...    type=book
     ...    year=2000
     ...    author=Some Author
+    ...    index=CleanTesting2008
     Set Title Value Via Javascript    ${EMPTY}
     Submit Form Bypassing Html5 Validation
     Page Should Contain    Error: Title must be between 1 and 64 characters.
@@ -39,6 +42,7 @@ Create Reference Fails With OutOfRange Year
     ...    type=book
     ...    year=2000
     ...    author=Old Author
+    ...    index=CleanTesting2008
     Set Year Value Via Javascript    500
     Submit Form Bypassing Html5 Validation
     Page Should Contain    Error: Year cannot be under 868 or too much in the future.
@@ -51,6 +55,7 @@ Create Reference Fails With Invalid Type
     ...    type=book
     ...    year=2020
     ...    author=Some Author
+    ...    index=CleanTesting2008
     Set Type Value Via Javascript    wrong
     Submit Form Bypassing Html5 Validation
     Page Should Contain    Epäkelpo viitetyyppi
@@ -63,6 +68,7 @@ Create Reference Fails With TooShortAuthor
     ...    type=book
     ...    year=2020
     ...    author=Some Author
+    ...    index=CleanTesting2008
     Set Author Value Via Javascript    Al
     Submit Form Bypassing Html5 Validation
     Page Should Contain    Error: Author must be at least 3 characters long.
@@ -79,11 +85,12 @@ Go To Add Reference Page
     Location Should Be    ${HOME_URL}/add_reference
 
 Fill Reference Form
-    [Arguments]    ${title}    ${type}    ${year}    ${author}
+    [Arguments]    ${title}    ${type}    ${year}    ${author}    ${index}
     Input Text    name:title     ${title}
     Select From List By Value    name:type    ${type}
     Input Text    name:year      ${year}
     Input Text    name:author    ${author}
+    Input Text    name:index     ${index}
 
 Submit Reference Form Normally
     [Documentation]    Normal submit – HTML5 validation active.

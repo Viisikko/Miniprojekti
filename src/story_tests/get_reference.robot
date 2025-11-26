@@ -15,6 +15,7 @@ Create Reference With Valid Data and Check Correct Data On Home Page
     ...    type=book
     ...    year=2010
     ...    author=Marti A. Robot
+    ...    index=MartiA.Robot2025
     Submit Reference Form Normally
     Wait Until Location Is    ${HOME_URL}/    5s
     Page Should Contain  Clean Testing
@@ -33,11 +34,12 @@ Go To Add Reference Page
     Location Should Be    ${HOME_URL}/add_reference
 
 Fill Reference Form
-    [Arguments]    ${title}    ${type}    ${year}    ${author}
+    [Arguments]    ${title}    ${type}    ${year}    ${author}    ${index}
     Input Text    name:title     ${title}
     Select From List By Value    name:type    ${type}
     Input Text    name:year      ${year}
     Input Text    name:author    ${author}
+    Input Text    name:index     ${index}
 
 Submit Reference Form Normally
     [Documentation]    Normal submit – HTML5 validation active.
