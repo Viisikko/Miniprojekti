@@ -5,9 +5,6 @@ body {
     @apply bg-linear-to-br from-slate-50 to-slate-100 min-h-screen;
 }
 
-input {
-    @apply border;
-}
 
 h1 {
     @apply text-4xl font-bold text-slate-900 mb-4;
@@ -21,6 +18,44 @@ h1 {
     @apply inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium cursor-pointer;
 }
 
-.main-container{
+.secondary-button {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors shadow-sm font-medium cursor-pointer;
+}
+
+.main-container {
     @apply container mx-auto px-4 py-8 max-w-6xl;
+}
+
+form.add_reference {
+    @apply flex flex-col gap-1;
+
+    div.action-button{
+        @apply flex flex-row gap-2 mt-2;
+    }
+    
+
+    div:not(.action-button){
+        @apply flex flex-col;
+
+        input,
+        select,
+        div > input {
+            @apply p-1 rounded-md border border-gray-400 sm:max-w-96;
+        }
+
+        div{
+            @apply relative sm:max-w-96;
+        }
+
+        .input-button{
+            @apply bg-blue-600 text-white absolute right-0 top-0 h-full rounded-r-md px-1;
+        }
+    }
+
+    div[required]{
+        span::after{
+            content: '*';
+            @apply text-red-500 pl-1;
+        }
+    }
 }

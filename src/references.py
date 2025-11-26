@@ -20,6 +20,13 @@ def get_reference_by_id(ref_id):
     result = db_helper.query(sql, {"id": ref_id})
     return result[0] if result else None
 
+def get_reference_by_index(ref_index):
+    sql = "SELECT * FROM viitteet WHERE index = :index"
+    result = db_helper.query(sql, {"index": ref_index})
+    return result[0] if result else None
+
+
+
 def update_reference(ref_id, index, title, type, year, author, organization, isbn, doi, url, publisher, journal, booktitle):
     authors = [a.strip() for a in author.split(",") if a.strip()]
 

@@ -10,21 +10,21 @@
 }
 
 form.add_reference[rtype="article"] > .type-specific.article{
-    display: block;
+    display: flex;
     visibility: visible;
 }
 
 form.add_reference[rtype="book"] > .type-specific.book{
-    display: block;
+    display: flex;
     visibility: visible;
 }
 
-form.add_reference > .type-specific{
+form.add_reference > .type-specific:not(.action-button){
     display: none;
     visibility: hidden;
 }
 
 form.add_reference[rtype="inproceedings"] > .type-specific.inproceedings{
-    display: block;
+    display: flex;
     visibility: visible;
 }
