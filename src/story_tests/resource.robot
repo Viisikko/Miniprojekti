@@ -7,7 +7,7 @@ ${DELAY}      0.5 seconds
 ${HOME_URL}   http://${SERVER}
 ${RESET_URL}  http://${SERVER}/reset_db
 ${BROWSER}    firefox
-${HEADLESS}   false
+${HEADLESS}   true
 
 *** Keywords ***
 Open And Configure Browser

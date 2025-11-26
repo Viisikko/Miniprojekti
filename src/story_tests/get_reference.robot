@@ -16,7 +16,7 @@ Create Reference With Valid Data and Check Correct Data On Home Page
     ...    year=2010
     ...    author=Marti A. Robot
     Submit Reference Form Normally
-    Location Should Be    ${HOME_URL}/
+    Wait Until Location Is    ${HOME_URL}/    5s
     Page Should Contain  Clean Testing
     Page Should Contain  book
     Page Should Contain  2010
@@ -42,6 +42,8 @@ Fill Reference Form
 Submit Reference Form Normally
     [Documentation]    Normal submit – HTML5 validation active.
     Click Button    Create reference
+    ${loc}=    Get Location
+    Log    Current URL after submit: ${loc}
 
 Set Title Value Via Javascript
     [Arguments]    ${value}

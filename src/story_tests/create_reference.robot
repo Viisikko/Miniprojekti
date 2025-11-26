@@ -16,7 +16,7 @@ Create Reference With Valid Data
     ...    year=2008
     ...    author=Robert C. Martin
     Submit Reference Form Normally
-    Location Should Be    ${HOME_URL}/
+    Wait Until Location Is    ${HOME_URL}/    5s
     Page Should Not Contain    Error:
 
 Create Reference Fails With Empty Title
@@ -51,9 +51,9 @@ Create Reference Fails With Invalid Type
     ...    type=book
     ...    year=2020
     ...    author=Some Author
-    Set Type Value Via Javascript    article
+    Set Type Value Via Javascript    wrong
     Submit Form Bypassing Html5 Validation
-    Page Should Contain    Error: Invalid type.
+    Page Should Contain    Epäkelpo viitetyyppi
 
 Create Reference Fails With TooShortAuthor
     [Documentation]    Backend should reject author shorter than 3 chars.
