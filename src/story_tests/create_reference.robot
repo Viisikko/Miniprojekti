@@ -73,7 +73,19 @@ Create Reference Fails With TooShortAuthor
     Submit Form Bypassing Html5 Validation
     Page Should Contain    Error: Author must be at least 3 characters long.
 
-
+Create Reference Fails Without Index
+    [Documentation]    Backend should reject missing index.
+    Go To Add Reference Page
+    Fill Reference Form
+    ...    title=Some Title
+    ...    type=book
+    ...    year=2000
+    ...    author=Some Author
+    ...    index=CleanTesting2008
+    Set Index Value Via Javascript   ${EMPTY}
+    Submit Form Bypassing Html5 Validation
+    Page Should Contain    Error: Index is required
+    
 *** Keywords ***
 Go To Add Reference Page
     Go To    ${HOME_URL}/login
@@ -114,6 +126,11 @@ Set Type Value Via Javascript
 Set Author Value Via Javascript
     [Arguments]    ${value}
     ${script}=    Set Variable    document.querySelector('input[name="author"]').value = "${value}";
+    Execute Javascript    ${script}
+
+Set Index Value Via Javascript
+    [Arguments]    ${value}
+    ${script}=    Set Variable    document.querySelector('input[name="index"]').value = "${value}";
     Execute Javascript    ${script}
 
 Submit Form Bypassing Html5 Validation

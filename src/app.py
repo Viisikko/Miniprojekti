@@ -79,7 +79,8 @@ def create_reference():
 
     if not author or len(author) < 3:
         return "Error: Author must be at least 3 characters long.<br> <a href='/add_reference'>Return to reference creation</a>"
-
+    if not index:
+            return "Error: Index is required"
     reference_id = None
 
     match reference_type:
