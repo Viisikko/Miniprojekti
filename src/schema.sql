@@ -10,10 +10,12 @@ CREATE TABLE viitteet (
   publisher TEXT,
   revision TEXT,
   journal TEXT,
+  booktitle TEXT, 
 
   /* Erinäiset tunnisteet */
   doi TEXT,
   isbn TEXT,
+  organization TEXT,
   uri TEXT
 
   /*

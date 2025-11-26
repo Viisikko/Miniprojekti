@@ -26,6 +26,7 @@
           <option value="book">Book</option>
           <option value="article">Article</option>
           <option value="misc">Misc</option>
+          <option value="inproceedings">inproceedings</option>
         </select>
       </p>
       <p>
@@ -42,10 +43,22 @@
         <button type="button" onclick="generate_index()">Use generated</button>
       </p>
 
-      <p class="book type-specific">
+      <p class="inproceedings type-specific">
+        booktitle *<br />
+        <input type="text" name="booktitle" minlength="3"/>
+      </p>
+
+
+      <p class="book inproceedings type-specific">
         Publisher <br />
         <input type="text" name="publisher" />
       </p>
+
+      <p class="inproceedings book type-specific">
+        organization <br />
+        <input type="text" name="organization" />
+      </p>
+
 
       <p class="article type-specific">
         Journal <br />

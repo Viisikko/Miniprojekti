@@ -23,3 +23,8 @@ form.add_reference > .type-specific{
     display: none;
     visibility: hidden;
 }
+
+form.add_reference[rtype="inproceedings"] > .type-specific.inproceedings{
+    display: block;
+    visibility: visible;
+}

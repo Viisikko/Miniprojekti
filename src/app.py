@@ -58,6 +58,10 @@ def create_reference():
     isbn = get_param("isbn")
     doi = get_param("doi")
     journal = get_param("journal")
+    url = get_param("url")
+    organization = get_param("organization")
+    booktitle = get_param("booktitle")
+    publisher = get_param("publisher")
 
     if not title or len(title) > 64:
         return "Error: Title must be between 1 and 64 characters.<br> <a href='/add_reference'>Return to reference creation</a>"
@@ -81,14 +85,25 @@ def create_reference():
     match reference_type:
         case "book":
             reference_id = references.add_reference(
-                index, title, reference_type, year, author)
+                index, title, reference_type, year, author,organization,isbn,doi,url,publisher)
         case "article":
             result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, doi, journal) VALUES (:index, :title, :type, :year, :author, :doi, :journal) RETURNING id"),
                                         {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "doi": doi, "journal": journal})
             db.session.commit()
             reference_id = result.fetchone()
         case "misc":
-            pass
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, uri) VALUES (:index, :title, :type, :year, :author, :url) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "url":url, "year": year, "author": list(map(lambda x: x.strip(), author.split(",")))})
+            db.session.commit()
+            reference_id = result.fetchone()
+        case "inproceedings":
+            if not booktitle:
+                return "Error: lisää booktitle"
+
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, booktitle, organization, uri,publisher) VALUES (:index, :title, :type, :year, :author, :booktitle, :organization, :url, :publisher) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "url":url, "booktitle":booktitle,"organization":organization,"publisher":publisher})
+            db.session.commit()
+            reference_id = result.fetchone()
         case _:
             return "Epäkelpo viitetyyppi", 400
 
