@@ -121,3 +121,102 @@ def export_bibtex():
     response.headers["Content-Disposition"] = f"attachment; filename=references_export.bib"
     response.headers["Content-Type"] = f"text/x-bibtex"
     return response
+
+
+@app.route("/delete_reference", methods=["POST"])
+@require_login()
+def delete_reference():
+    ref_id = request.form["id"]
+    references.delete_reference(ref_id)
+    return redirect("/")
+
+@app.route("/edit_reference/<int:ref_id>", methods=["GET"])
+@require_login()
+def edit_reference(ref_id):
+    ref = references.get_reference_by_id(ref_id)
+    if not ref:
+        return redirect("/")
+
+    ref_data = dict(ref)
+    if ref_data["author"]:
+        ref_data["author"] = ", ".join(ref_data["author"])
+    
+    return render_template("edit_reference.html", ref=ref_data)
+
+@app.route("/update_reference", methods=["POST"])
+@require_login()
+def update_reference():
+    def get_param(x): return request.form.get(x, "").strip()
+
+    # Otetaan ID talteen, jotta tiedetään mitä riviä päivitetään
+    ref_id = get_param("id")
+    
+    title = get_param("title")
+    reference_type = get_param("type")
+    year_raw = get_param("year")
+    author = get_param("author")
+    index = get_param("index")
+    isbn = get_param("isbn")
+    doi = get_param("doi")
+    journal = get_param("journal")
+    url = get_param("url")
+    organization = get_param("organization")
+    booktitle = get_param("booktitle")
+    publisher = get_param("publisher")
+
+    # --- SAMA VALIDOINTI KUIN CREATE_REFERENCE ---
+    if not title or len(title) > 64:
+        return "Error: Title must be between 1 and 64 characters."
+
+    if not year_raw:
+        return "Error: Year is required."
+
+    try:
+        year = int(year_raw)
+    except ValueError:
+        return "Error: Year must be a number."
+
+    if year < 868 or year > 2099:
+        return "Error: Year cannot be under 868 or too much in the future."
+
+    if not author or len(author) < 3:
+        return "Error: Author must be at least 3 characters long."
+    if not index:
+        return "Error: Index is required"
+
+    # Muutetaan author-string listaksi tietokantaa varten (kuten create-funktiossa)
+    author_list = list(map(lambda x: x.strip(), author.split(",")))
+
+    match reference_type:
+        case "book":
+            # Jos sinulla on references.py:ssä update_reference, käytä sitä.
+            # Tässä kuitenkin sama raaka-SQL tyyli varmuuden vuoksi, jotta "index"-virhe ei toistu:
+            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author, organization=:organization, isbn=:isbn, doi=:doi, uri=:url, publisher=:publisher WHERE id=:id')
+            db.session.execute(sql, {"id": ref_id, "index": index, "title": title, "year": year, "author": author_list, "organization": organization, "isbn": isbn, "doi": doi, "url": url, "publisher": publisher})
+            db.session.commit()
+
+        case "article":
+            # HUOM: "index" lainausmerkeissä
+            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author, doi=:doi, journal=:journal WHERE id=:id')
+            db.session.execute(sql, {"id": ref_id, "index": index, "title": title, "year": year, "author": author_list, "doi": doi, "journal": journal})
+            db.session.commit()
+
+        case "misc":
+            # HUOM: "index" lainausmerkeissä
+            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author, uri=:url WHERE id=:id')
+            db.session.execute(sql, {"id": ref_id, "index": index, "title": title, "year": year, "author": author_list, "url": url})
+            db.session.commit()
+
+        case "inproceedings":
+            if not booktitle:
+                return "Error: lisää booktitle"
+            
+            # HUOM: "index" lainausmerkeissä
+            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author, booktitle=:booktitle, organization=:organization, uri=:url, publisher=:publisher WHERE id=:id')
+            db.session.execute(sql, {"id": ref_id, "index": index, "title": title, "year": year, "author": author_list, "booktitle": booktitle, "organization": organization, "url": url, "publisher": publisher})
+            db.session.commit()
+
+        case _:
+            return "Epäkelpo viitetyyppi", 400
+
+    return redirect("/")
