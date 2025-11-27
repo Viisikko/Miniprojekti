@@ -118,6 +118,14 @@ def create_reference():
     return redirect("/")
 
 
+@app.route("/index/<index>")
+@require_login()
+def check_index(index):
+    if index:
+        return {"status": references.get_reference_by_index(index) != None}
+    return "not a valid index", 400
+
+
 @app.route("/export_bibtex")
 @require_login()
 def export_bibtex():
