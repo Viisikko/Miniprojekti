@@ -1,7 +1,7 @@
-import os
-from flask import g
 from config import db, app
 from sqlalchemy import text
+from flask import g
+import os
 
 def reset_db():
     print(f"Resetting db")
@@ -12,11 +12,12 @@ def reset_db():
 def tables():
     """Returns all table names from the database except those ending with _id_seq"""
     sql = text(
-    "SELECT table_name "
-    "FROM information_schema.tables "
-    "WHERE table_schema = 'public' "
-    "AND table_name NOT LIKE '%_id_seq'"
+      "SELECT table_name "
+      "FROM information_schema.tables "
+      "WHERE table_schema = 'public' "
+      "AND table_name NOT LIKE '%_id_seq'"
     )
+
     result = db.session.execute(sql)
     return [row[0] for row in result.fetchall()]
 
@@ -33,15 +34,16 @@ def setup_db():
             db.session.execute(sql)
         db.session.commit()
 
-print("Creating database")
-# Read schema from schema.sql file
-schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
-with open(schema_path, 'r') as f:
-    schema_sql = f.read().strip()
+    print("Creating database")
 
-sql = text(schema_sql)
-db.session.execute(sql)
-db.session.commit()
+    # Read schema from schema.sql file
+    schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
+    with open(schema_path, 'r') as f:
+        schema_sql = f.read().strip()
+
+    sql = text(schema_sql)
+    db.session.execute(sql)
+    db.session.commit()
 
 def execute(sql, params=None):
     if params is None:
