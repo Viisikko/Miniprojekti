@@ -48,7 +48,8 @@ def add_reference():
 @app.route("/create_reference", methods=["POST"])
 @require_login()
 def create_reference():
-    def get_param(x): return request.form.get(x, "").strip()
+    def get_param(x):
+        return request.form.get(x, "").strip()
 
     title = get_param("title")
     reference_type = get_param("type")
@@ -152,7 +153,8 @@ def edit_reference(ref_id):
 @app.route("/update_reference", methods=["POST"])
 @require_login()
 def update_reference():
-    def get_param(x): return request.form.get(x, "").strip()
+    def get_param(x):
+        return request.form.get(x, "").strip()
 
     # Otetaan ID talteen, jotta tiedetään mitä riviä päivitetään
     ref_id = get_param("id")
