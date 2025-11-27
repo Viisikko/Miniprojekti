@@ -9,6 +9,8 @@ USERCONFIG="outi:12345"
 
 Linkki backlogiin
 https://github.com/orgs/Viisikko/projects/1
+Linkki demoon
+https://limousines-bless-bag-memory.trycloudflare.com/login
 
 Definition of done:
 - sovellus käynnistyy ilman virheitä
