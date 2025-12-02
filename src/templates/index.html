@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My References</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='compiled.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bibtex_modal.css') }}">
+    <script src="{{ url_for('static', filename='bibtex.js') }}"></script>
 </head>
 
 <body>
@@ -23,14 +25,32 @@
                 </svg>
                 Add New Reference
             </a>
-            <a href="/export_bibtex" 
-                class="primary-button">
+            <button onclick="openBibtexModal()" class="primary-button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                         d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
                 Export BibTeX
-            </a>
+            </button>
+
+            <div id="bibtexModal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <h3>Export BibTeX</h3>
+                    <p>Choose an action:</p>
+                    
+                    <div class="modal-actions">
+                        <a href="/export_bibtex" class="modal-btn primary" onclick="closeBibtexModal()">
+                            Download File
+                        </a>
+                        
+                        <button id="copyBtn" onclick="copyBibtexToClipboard()" class="modal-btn secondary">
+                            Copy to Clipboard
+                        </button>
+                    </div>
+
+                    <button onclick="closeBibtexModal()" class="close-btn">Cancel</button>
+                </div>
+            </div>
         </div>
 
         {% if references %}

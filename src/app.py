@@ -126,14 +126,14 @@ def check_index(index):
     return "not a valid index", 400
 
 
-@app.route("/export_bibtex")
-@require_login()
+@app.route('/export_bibtex')
 def export_bibtex():
-    bibtex_output = generate_bibtex.export_viitteet_to_bibtex()
-    response = Response(bibtex_output)
-    response.headers["Content-Disposition"] = f"attachment; filename=references_export.bib"
-    response.headers["Content-Type"] = f"text/x-bibtex"
-    return response
+    bibtex_string = generate_bibtex.export_viitteet_to_bibtex()
+    return Response(
+        bibtex_string,
+        mimetype="text/plain",
+        headers={"Content-Disposition": "attachment;filename=references.bib"}
+    )
 
 
 @app.route("/delete_reference", methods=["POST"])
