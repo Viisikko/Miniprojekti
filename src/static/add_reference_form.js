@@ -1,7 +1,7 @@
 function generate_index() {
     const year = document.querySelector('[name="year"]').value;
     const authors = document.querySelector('[name="author"]').value.split(",");
-    const generated_index = authors.join("").replaceAll(" ", "") + year;
+    const generated_index = authors[0].replaceAll(" ", "") + year;
     return generated_index
 }
 
@@ -30,6 +30,42 @@ async function generate_index_request() {
 
         give_up_counter++;
     }
+}
+
+
+async function autofill_doi() {
+    function autofill_field(id, from) {
+        if ((from[id] != undefined) && (from[id] != null)){
+            document.querySelector('[name="'+id+'"]').value = from[id]
+        }
+    }
+
+    if (document.querySelector('[name="doi"]').value.length == 0){
+        return
+    }
+
+    const res = await fetch("/metadata?" + new URLSearchParams({
+        doi: document.querySelector('[name="doi"]').value
+    }))
+
+    if (!res.ok){
+        return
+    }
+
+    let api_json = await res.json()
+    if(api_json["authors"] != null){
+        api_json["authors"] = api_json["authors"].join(", ")
+    }
+
+    autofill_field("title", api_json)
+    autofill_field("url", api_json)
+    autofill_field("year", api_json)
+    autofill_field("journal", api_json)
+    autofill_field("publisher", api_json)
+    autofill_field("author", api_json)
+
+    generate_index_request()
+
 }
 
 function handle_reftype() {

@@ -4,6 +4,7 @@ from functools import wraps
 import references
 import generate_bibtex
 from sqlalchemy import text
+import requests
 
 
 def require_login():
@@ -21,17 +22,15 @@ def require_login():
 @app.route("/")
 @require_login()
 def index():
-    references_list = references.get_all_references()
-    return render_template("index.html", references=references_list)
+    search_query = ""
+    if request.args.get("q"):
+        search_query = request.args.get("q")
+        references_list = references.search_references(search_query)
+    else:
+        references_list = references.get_all_references()
 
-@app.route("/search", methods=["POST","GET"])
-@require_login()
-def search():
-    #  hae search ...
-    # search = request.form.get("search")
-    # pitää muuttaa hakemaan searchin perusteella halutulla tavalla
-    references_list = references.get_all_references()
-    return render_template("index.html", references=references_list )
+    return render_template("index.html", references=references_list, search_query=search_query)
+
 
 @app.route("/", methods=["POST"])
 def login_post():
@@ -73,8 +72,8 @@ def create_reference():
     publisher = get_param("publisher")
     category = get_param("category")
 
-    if not title or len(title) > 64:
-        return "Error: Title must be between 1 and 64 characters.<br> <a href='/add_reference'>Return to reference creation</a>", 400
+    if not title or len(title) > 512:
+        return "Error: Title must be between 1 and 512 characters.<br> <a href='/add_reference'>Return to reference creation</a>", 400
 
     if not year_raw:
         return "Error: Year is required.<br> <a href='/add_reference'>Return to reference creation</a>", 400
@@ -97,26 +96,37 @@ def create_reference():
 
     reference_id = None
 
+    def to_strval(x): return x if x != None else ""
+    search_str = ' '.join(
+        f"{title} {author.replace(",", " ")} {year} {to_strval(journal)} {to_strval(publisher)} {to_strval(booktitle)}".strip().split())
+
     match reference_type:
         case "book":
-            reference_id = references.add_reference(
-                index, title, reference_type, year, author, organization, isbn, doi, url, publisher, category)
+            # reference_id = references.add_reference(
+            #    index, title, reference_type, year, author, organization, isbn, doi, url, publisher, category)
+
+            # Korvattu toistaiseksi samalla toteutuksella kun muut
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, organization, doi, isbn, publisher, uri, search_str, category) VALUES (:index, :title, :type, :year, :author, :organization, :doi, :isbn, :publisher, :uri, :search_str, :category) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "organization": organization, "doi": doi, "isbn": isbn, "publisher": publisher, "uri": url, "search_str": search_str, "category": list(map(lambda x: x.strip(), category.split(",")))})
+            db.session.commit()
+            reference_id = result.fetchone()
+
         case "article":
-            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, doi, journal, category) VALUES (:index, :title, :type, :year, :author, :doi, :journal, :category) RETURNING id"),
-                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))),"category":list(map(lambda x: x.strip(), category.split(","))),  "doi": doi, "journal": journal})
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, doi, journal, category, search_str, uri) VALUES (:index, :title, :type, :year, :author, :doi, :journal, :category, :search_str, :uri) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "category": list(map(lambda x: x.strip(), category.split(","))),  "doi": doi, "journal": journal, "search_str": search_str, "uri":url})
             db.session.commit()
             reference_id = result.fetchone()
         case "misc":
-            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, uri,category) VALUES (:index, :title, :type, :year, :author, :url, :category) RETURNING id"),
-                                        {"index": index, "title": title, "type": reference_type, "url": url, "year": year,"category":list(map(lambda x: x.strip(), category.split(","))), "author": list(map(lambda x: x.strip(), author.split(",")))})
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, uri,category, search_str) VALUES (:index, :title, :type, :year, :author, :url, :category, :search_str) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "url": url, "year": year, "category": list(map(lambda x: x.strip(), category.split(","))), "author": list(map(lambda x: x.strip(), author.split(","))), "search_str": search_str})
             db.session.commit()
             reference_id = result.fetchone()
         case "inproceedings":
             if not booktitle:
                 return "Error: lisää booktitle"
 
-            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, booktitle, organization, uri,publisher,category) VALUES (:index, :title, :type, :year, :author, :booktitle, :organization, :url, :publisher, :category) RETURNING id"),
-                                        {"index": index, "title": title, "type": reference_type, "year": year,"category":list(map(lambda x: x.strip(), category.split(","))), "author": list(map(lambda x: x.strip(), author.split(","))), "url": url, "booktitle": booktitle, "organization": organization, "publisher": publisher})
+            result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, booktitle, organization, uri, publisher, category, search_str) VALUES (:index, :title, :type, :year, :author, :booktitle, :organization, :url, :publisher, :category, :search_str) RETURNING id"),
+                                        {"index": index, "title": title, "type": reference_type, "year": year, "category": list(map(lambda x: x.strip(), category.split(","))), "author": list(map(lambda x: x.strip(), author.split(","))), "url": url, "booktitle": booktitle, "organization": organization, "publisher": publisher, "search_str": search_str})
             db.session.commit()
             reference_id = result.fetchone()
         case _:
@@ -133,6 +143,33 @@ def check_index(index):
     if index:
         return {"status": references.get_reference_by_index(index) != None}
     return "not a valid index", 400
+
+
+@app.route("/metadata")
+@require_login()
+def get_metadata():
+    doi = request.args.get("doi")
+    if doi:
+        api_response = requests.get(
+            f"https://api.crossref.org/works/doi/{doi}")
+
+        if api_response.status_code != 200:
+            return "external api error", 500
+        try:
+            api_json = api_response.json()["message"]
+        except requests.exceptions.JSONDecodeError:
+            return "external api responded with invalid data", 500
+
+        return {
+            "author": list(map(lambda x: f"{x["given"]} {x["family"]}", api_json["author"])),
+            "publisher": api_json["publisher"],
+            "title": api_json["title"][0] if len(api_json["title"]) > 0 else None,
+            "year": api_json["published"]["date-parts"][0][0] if ("date-parts" in api_json["published"]) and (len(api_json["published"]["date-parts"]) > 0) else None,
+            "journal": api_json["container-title"][0] if ("container-title" in api_json) and (len(api_json["container-title"]) > 0) else None,
+            "url": api_json["link"][0]["URL"] if len(api_json["link"]) > 0 else None
+        }
+    
+    return "invalid request", 400
 
 
 @app.route('/export_bibtex')
@@ -169,6 +206,7 @@ def edit_reference(ref_id):
     else:
         ref_data["category"] = ""
 
+
     return render_template("add_reference.html", ref=ref_data)
 
 
@@ -195,8 +233,8 @@ def update_reference():
     category = get_param("category")
 
     # --- SAMA VALIDOINTI KUIN CREATE_REFERENCE ---
-    if not title or len(title) > 64:
-        return "Error: Title must be between 1 and 64 characters.", 400
+    if not title or len(title) > 512:
+        return "Error: Title must be between 1 and 512 characters.", 400
 
     if not year_raw:
         return "Error: Year is required.", 400
@@ -233,29 +271,33 @@ def update_reference():
     author_list = list(map(lambda x: x.strip(), author.split(",")))
     category_list = list(map(lambda x: x.strip(), category.split(",")))
 
+    def to_strval(x): return x if x != None else ""
+    search_str = ' '.join(
+        f"{title} {author.replace(",", " ")} {year} {to_strval(journal)} {to_strval(publisher)} {to_strval(booktitle)}".strip().split())
+
     match reference_type:
         case "book":
             # Jos sinulla on references.py:ssä update_reference, käytä sitä.
             # Tässä kuitenkin sama raaka-SQL tyyli varmuuden vuoksi, jotta "index"-virhe ei toistu:
-            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author, category=:category, organization=:organization, isbn=:isbn, doi=:doi, uri=:url, publisher=:publisher WHERE id=:id')
+            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author, category=:category, organization=:organization, isbn=:isbn, doi=:doi, uri=:url, publisher=:publisher, search_str=:search_str WHERE id=:id')
             db.session.execute(sql, {"id": ref_id, "index": index, "title": title, "year": year, "author": author_list, "category": category_list,
-                               "organization": organization, "isbn": isbn, "doi": doi, "url": url, "publisher": publisher})
+                               "organization": organization, "isbn": isbn, "doi": doi, "url": url, "publisher": publisher, "search_str": search_str})
             db.session.commit()
 
         case "article":
             # HUOM: "index" lainausmerkeissä
             sql = text(
-                'UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, doi=:doi, journal=:journal WHERE id=:id')
+                'UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, doi=:doi, journal=:journal, search_str=:search_str, uri=:url WHERE id=:id')
             db.session.execute(sql, {"id": ref_id, "index": index, "title": title,
-                               "year": year, "author": author_list,"category": category_list, "doi": doi, "journal": journal})
+                               "year": year, "author": author_list, "category": category_list, "doi": doi, "journal": journal, "search_str": search_str, "url":url})
             db.session.commit()
 
         case "misc":
             # HUOM: "index" lainausmerkeissä
             sql = text(
-                'UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, uri=:url WHERE id=:id')
+                'UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, uri=:url, search_str=:search_str WHERE id=:id')
             db.session.execute(sql, {"id": ref_id, "index": index, "title": title,
-                               "year": year, "author": author_list,"category": category_list, "url": url})
+                               "year": year, "author": author_list, "category": category_list, "url": url, "search_str": search_str})
             db.session.commit()
 
         case "inproceedings":
@@ -263,9 +305,9 @@ def update_reference():
                 return "Error: lisää booktitle"
 
             # HUOM: "index" lainausmerkeissä
-            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, booktitle=:booktitle, organization=:organization, uri=:url, publisher=:publisher WHERE id=:id')
+            sql = text('UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, booktitle=:booktitle, organization=:organization, uri=:url, publisher=:publisher, search_str=:search_str WHERE id=:id')
             db.session.execute(sql, {"id": ref_id, "index": index, "title": title, "year": year, "author": author_list, "category": category_list,
-                               "booktitle": booktitle, "organization": organization, "url": url, "publisher": publisher})
+                               "booktitle": booktitle, "organization": organization, "url": url, "publisher": publisher, "search_str": search_str})
             db.session.commit()
 
         case _:

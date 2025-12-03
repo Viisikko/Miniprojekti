@@ -18,8 +18,13 @@ CREATE TABLE viitteet (
   organization TEXT,
   uri TEXT,
 
-  /* kategoria */
-  category TEXT[]
+  /* Kategoria */
+  category TEXT[],
+
+  /* Haku */
+  search_str TEXT NOT NULL,
+  hakuvektori TSVECTOR
+      GENERATED ALWAYS AS (to_tsvector('simple', search_str)) STORED
 
   /*
   Mahdolliset kentät viitetyypeille
@@ -38,12 +43,12 @@ CREATE TABLE viitteet (
   article:
     journal
     doi
-
-  Työn alla:
   
   inproceedings:
     booktitle
     organization
     publisher
   */
-)
+);
+
+CREATE INDEX viitteet_haku ON viitteet USING gin(hakuvektori);

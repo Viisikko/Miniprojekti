@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 {% set edit_mode = ref is defined %}
+
 <head>
   {% if edit_mode %}
   <title>Edit reference</title>
@@ -21,12 +22,15 @@
     {% else %}
     <h1>New reference</h1>
     {% endif %}
-    <form action="{{"/update_reference" if edit_mode else "/create_reference"}}" method="post" class="add_reference" rtype="{{ref["type"] if edit_mode else ""}}">
+
+    <form action="{{" /update_reference" if edit_mode else "/create_reference" }}" method="post" class="add_reference"
+      rtype="{{ref["type"] if edit_mode else "" }}">
       <div required>
         <span>Title</span>
-        <input type="text" name="title" minlength="1" maxlength="64" value="{{ref["title"] if edit_mode else ""}}" required />
+        <input type="text" name="title" minlength="1" maxlength="64" value="{{ref["title"] if edit_mode else "" }}"
+          required />
       </div>
-      {% if not edit_mode %}      
+      {% if not edit_mode %}
       <div required>
         <span>Reference type</span>
         <select name="type" required onchange="handle_reftype()">
@@ -38,68 +42,76 @@
         </select>
       </div>
       {% else %}
-        <input type="hidden" name="id" value="{{ ref["id"] }}">
+      <input type="hidden" name="id" value="{{ ref["id"] }}">
       {% endif %}
       <div required>
         <span>Year</span>
-        <input type="number" min="868" max="2099" step="1" value="2025" name="year" value="{{ref["year"] if edit_mode else ""}}" required />
+        <input type="number" min="868" max="2099" step="1" value="2025" name="year" value="{{ref["year"] if edit_mode
+          else "" }}" required />
       </div>
       <div required>
         <span>Authors (separated by comma)</span>
-        <input type="text" name="author" minlength="3" value="{{ref["author"] if edit_mode else ""}}" required />
+        <input type="text" name="author" minlength="3" value="{{ref["author"] if edit_mode else "" }}" required />
       </div>
       <div required>
         <span>Index</span>
         <div>
-          <input type="text" name="index" minlength="3" value="{{ref["index"] if edit_mode else ""}}" required />
-          <button type="button" class="input-button" onclick="generate_index_request()" class="small-button">Auto</button>
+          <input type="text" name="index" minlength="3" value="{{ref["index"] if edit_mode else "" }}" required />
+          <button type="button" class="input-button" onclick="generate_index_request()"
+            class="small-button">Auto</button>
         </div>
       </div>
 
       <div required class="inproceedings type-specific">
         <span>Booktitle</span>
-        <input type="text" name="booktitle" minlength="3" value="{{ref["booktitle"] if edit_mode else ""}}" />
+        <input type="text" name="booktitle" minlength="3" value="{{(ref["booktitle"] if ref["booktitle"]) if edit_mode
+          else "" }}" />
       </div>
 
 
       <div class="book inproceedings type-specific">
         <span>Publisher</span>
-        <input type="text" name="publisher" value="{{ref["publisher"] if edit_mode else ""}}" />
+        <input type="text" name="publisher" value="{{(ref["publisher"] if ref["publisher"]) if edit_mode else "" }}" />
       </div>
 
       <div class="inproceedings book type-specific">
         <span>Organization</span>
-        <input type="text" name="organization" value="{{ref["organization"] if edit_mode else ""}}" />
+        <input type="text" name="organization" value="{{(ref["organization"] if ref["organization"]) if edit_mode
+          else "" }}" />
       </div>
 
 
       <div class="article type-specific">
         <span>Journal</span>
-        <input type="text" name="journal" value="{{ref["journal"] if edit_mode else ""}}" />
+        <input type="text" name="journal" value="{{(ref["journal"] if ref["journal"]) if edit_mode else "" }}" />
       </div>
 
       <div class="book type-specific">
         <span>ISBN</span>
-        <input type="text" name="isbn" value="{{ref["isbn"] if edit_mode else ""}}" />
+        <input type="text" name="isbn" value="{{(ref["isbn"] if ref["isbn"]) if edit_mode else "" }}" />
       </div>
 
       <div class="article book type-specific">
         <span>DOI</span>
-        <input type="text" name="doi" value="{{ref["doi"] if edit_mode else ""}}" />
+        <div>
+          <input type="text" name="doi" value="{{(ref["doi"] if ref["doi"]) if edit_mode else "" }}" />
+          <button type="button" class="input-button" onclick="autofill_doi()"
+            class="small-button">Auto</button>
+        </div>
       </div>
 
       <div>
         <span>URL</span>
-        <input type="text" name="url" value="{{ref["uri"] if edit_mode else ""}}" />
+        <input type="text" name="url" value="{{(ref["uri"] if ref["uri"]) if edit_mode else "" }}" />
       </div>
 
       <div>
-        <span>category</span>
-        <input type="text" name="category" value="{{ref["category"] if edit_mode else ""}}" />
+        <span>Category</span>
+        <input type="text" name="category" value="{{ref["category"] if edit_mode else "" }}" />
       </div>
 
       <div class="action-button">
-        <input type="submit" value="{{"Save" if edit_mode else "Create reference"}}" class="primary-button" />
+        <input type="submit" value="{{" Save" if edit_mode else "Create reference" }}" class="primary-button" />
         <a class="secondary-button" href="/">Back to Main Page</a>
       </div>
     </form>

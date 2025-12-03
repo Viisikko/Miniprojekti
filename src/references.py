@@ -26,6 +26,9 @@ def get_reference_by_index(ref_index):
     result = db_helper.query(sql, {"index": ref_index})
     return result[0] if result else None
 
+def search_references(search_terms):
+    sql = "SELECT * FROM viitteet WHERE hakuvektori @@ websearch_to_tsquery('simple', :search_terms)"
+    return db_helper.query(sql, {"search_terms": search_terms})
 
 
 def update_reference(ref_id, index, title, type, year, author, organization, isbn, doi, url, publisher, journal, booktitle):
