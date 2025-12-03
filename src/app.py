@@ -113,7 +113,7 @@ def create_reference():
 
         case "article":
             result = db.session.execute(text("INSERT INTO viitteet (index, title, type, year, author, doi, journal, category, search_str, uri) VALUES (:index, :title, :type, :year, :author, :doi, :journal, :category, :search_str, :uri) RETURNING id"),
-                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "category": list(map(lambda x: x.strip(), category.split(","))),  "doi": doi, "journal": journal, "search_str": search_str, "uri":url})
+                                        {"index": index, "title": title, "type": reference_type, "year": year, "author": list(map(lambda x: x.strip(), author.split(","))), "category": list(map(lambda x: x.strip(), category.split(","))),  "doi": doi, "journal": journal, "search_str": search_str, "uri": url})
             db.session.commit()
             reference_id = result.fetchone()
         case "misc":
@@ -151,7 +151,7 @@ def get_metadata():
     doi = request.args.get("doi")
     if doi:
         api_response = requests.get(
-            f"https://api.crossref.org/works/doi/{doi}")
+            f"https://api.crossref.org/works/doi/{doi}", timeout=5)
 
         if api_response.status_code != 200:
             return "external api error", 500
@@ -168,7 +168,7 @@ def get_metadata():
             "journal": api_json["container-title"][0] if ("container-title" in api_json) and (len(api_json["container-title"]) > 0) else None,
             "url": api_json["link"][0]["URL"] if len(api_json["link"]) > 0 else None
         }
-    
+
     return "invalid request", 400
 
 
@@ -205,7 +205,6 @@ def edit_reference(ref_id):
         ref_data["category"] = ", ".join(ref_data["category"])
     else:
         ref_data["category"] = ""
-
 
     return render_template("add_reference.html", ref=ref_data)
 
@@ -289,7 +288,7 @@ def update_reference():
             sql = text(
                 'UPDATE viitteet SET "index"=:index, title=:title, year=:year, author=:author,category=:category, doi=:doi, journal=:journal, search_str=:search_str, uri=:url WHERE id=:id')
             db.session.execute(sql, {"id": ref_id, "index": index, "title": title,
-                               "year": year, "author": author_list, "category": category_list, "doi": doi, "journal": journal, "search_str": search_str, "url":url})
+                               "year": year, "author": author_list, "category": category_list, "doi": doi, "journal": journal, "search_str": search_str, "url": url})
             db.session.commit()
 
         case "misc":
