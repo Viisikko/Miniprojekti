@@ -5,6 +5,8 @@ import references
 import generate_bibtex
 from sqlalchemy import text
 import requests
+import urllib.parse
+
 
 
 def require_login():
@@ -150,6 +152,9 @@ def check_index(index):
 def get_metadata():
     doi = request.args.get("doi")
     if doi:
+        if doi.startswith("http"):
+            doi = urllib.parse.urlparse(doi).path[1:]
+
         api_response = requests.get(
             f"https://api.crossref.org/works/doi/{doi}", timeout=5)
 

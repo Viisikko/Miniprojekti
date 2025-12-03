@@ -32,7 +32,7 @@ Create Reference Fails With Empty Title
     ...    index=CleanTesting2008
     Set Title Value Via Javascript    ${EMPTY}
     Submit Form Bypassing Html5 Validation
-    Page Should Contain    Error: Title must be between 1 and 64 characters.
+    Page Should Contain    Error: Title must be between 1 and 512 characters.
 
 Create Reference Fails With OutOfRange Year
     [Documentation]    Backend should reject year < 868.

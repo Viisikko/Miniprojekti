@@ -4,3 +4,4 @@ python-dotenv
 getenv
 psycopg2-binary
 requests
+gunicorn
