@@ -1,6 +1,6 @@
 *** Settings ***
 Library  SeleniumLibrary
-
+Library  OperatingSystem
 *** Variables ***
 ${SERVER}     localhost:5001
 ${DELAY}      0.5 seconds
@@ -25,7 +25,10 @@ Open And Configure Browser
         Set Selenium Speed  ${DELAY}
     END
     Open Browser  browser=${BROWSER}  options=${options}
+    Reset DB
 
 Reset Todos
     Go To  ${RESET_URL}
 
+Reset DB
+    Run  python3 src/db_helper.py
