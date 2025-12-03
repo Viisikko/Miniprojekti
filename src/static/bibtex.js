@@ -21,13 +21,28 @@ async function copyBibtexToClipboard() {
         const response = await fetch('/export_bibtex');
         if (!response.ok) throw new Error('Network response was not ok');
         const bibtexText = await response.text();
-        
-        await navigator.clipboard.writeText(bibtexText);
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            await navigator.clipboard.writeText(bibtexText);
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = bibtexText;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (!successful) throw new Error('Fallback: copy command was unsuccessful');
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
 
         copyBtn.classList.add('success');
-        
+
         copyBtn.innerText = "Copied!";
-        
+
         setTimeout(() => {
             closeBibtexModal();
 

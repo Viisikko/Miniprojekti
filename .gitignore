@@ -213,3 +213,5 @@ __marimo__/
 *.bib
 
 selenium*.png
+
+.vscode
