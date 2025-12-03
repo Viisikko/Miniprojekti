@@ -1,9 +1,10 @@
 import db_helper
 
-def add_reference(index,title,type,year,author,organization,isbn,doi,url,publisher):
+def add_reference(index,title,type,year,author,organization,isbn,doi,url,publisher,category):
     authors = [a.strip() for a in author.split(",") if a.strip()]
-    sql = """INSERT INTO viitteet (index, title, type, year, author, organization, isbn, doi, uri, publisher) VALUES (:index, :title, :type, :year, :author, :organization, :publisher, :isbn,:doi, :url) RETURNING id"""
-    db_helper.execute(sql, {"index":index, "title": title, "type": type, "year": year, "author": authors, "organization":organization, "isbn":isbn, "doi":doi, "url":url, "publisher":publisher})
+    category = [b.strip() for b in category.split(",") if b.strip()]
+    sql = """INSERT INTO viitteet (index, title, type, year, author, organization, isbn, doi, uri, publisher,category) VALUES (:index, :title, :type, :year, :author, :organization, :publisher, :isbn,:doi, :url, :category) RETURNING id"""
+    db_helper.execute(sql, {"index":index, "title": title, "type": type, "year": year, "author": authors, "organization":organization, "isbn":isbn, "doi":doi, "url":url, "publisher":publisher, "category":category})
 
     return db_helper.last_insert_id()
 

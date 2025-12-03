@@ -16,7 +16,10 @@ CREATE TABLE viitteet (
   doi TEXT,
   isbn TEXT,
   organization TEXT,
-  uri TEXT
+  uri TEXT,
+
+  /* kategoria */
+  category TEXT[]
 
   /*
   Mahdolliset kentät viitetyypeille

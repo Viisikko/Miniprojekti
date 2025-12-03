@@ -51,6 +51,14 @@
                     <button onclick="closeBibtexModal()" class="close-btn">Cancel</button>
                 </div>
             </div>
+
+        </div>
+
+        <div class="mb-6" >
+            <form  action= "/search" method="POST">
+                <input type="text" placeholder="Search.." name="search">
+                <button type="submit" class="text-indigo-600 hover:text-indigo-900 mr-4" >Search</button>
+            </form>
         </div>
 
         {% if references %}
@@ -71,6 +79,9 @@
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                 Author(s)
                             </th>
+                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                category(s)
+                            </th>
                             <th class="px-6 py-4 text-right text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                 Actions
                             </th>
@@ -87,6 +98,7 @@
                             </td>
                             <td class="px-6 py-4 text-sm text-slate-600">{{ ref.year }}</td>
                             <td class="px-6 py-4 text-sm text-slate-600">{{ ref.author | join(', ') }}</td>
+                             <td class="px-6 py-4 text-sm text-slate-600">{{ ref.category | join(', ') }}</td>
                             
                             <td class="px-6 py-4 text-sm text-right font-medium whitespace-nowrap">
                                 <a href="/edit_reference/{{ ref.id }}" class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
