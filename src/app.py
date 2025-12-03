@@ -28,7 +28,7 @@ def index():
 @require_login()
 def search():
     #  hae search ...
-    search = request.form.get("search")
+    # search = request.form.get("search")
     # pitää muuttaa hakemaan searchin perusteella halutulla tavalla
     references_list = references.get_all_references()
     return render_template("index.html", references=references_list )
