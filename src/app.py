@@ -25,7 +25,7 @@ def require_login():
 @require_login()
 def index():
     search_query = ""
-    
+
     sort_by = request.args.get("sort", "id")
     order = request.args.get("order", "asc")
 
@@ -39,7 +39,7 @@ def index():
             return True
 
         tag_search_expression = r"tag\:\w+"
-        
+
         tags = re.findall(tag_search_expression, search_query)
         cleaned_search_query = re.sub(tag_search_expression, '', search_query).strip()
 
@@ -54,8 +54,8 @@ def index():
     else:
         references_list = references.get_all_references(sort_by, order)
 
-    return render_template("index.html", 
-                           references=references_list, 
+    return render_template("index.html",
+                           references=references_list,
                            search_query=search_query,
                            current_sort=sort_by,
                            current_order=order)
@@ -193,7 +193,7 @@ def get_metadata():
             return "external api responded with invalid data", 500
 
         return {
-            "author": list(map(lambda x: f"{x["given"]} {x["family"]}", api_json["author"])),
+            "author": list(map(lambda x: f"{x["given"]} {x["family"]}", api_json["author"])) if ("author" in api_json) and (api_json["author"] != None) else [],
             "publisher": api_json["publisher"],
             "title": api_json["title"][0] if len(api_json["title"]) > 0 else None,
             "year": api_json["published"]["date-parts"][0][0] if ("date-parts" in api_json["published"]) and (len(api_json["published"]["date-parts"]) > 0) else None,
