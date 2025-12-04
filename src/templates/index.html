@@ -68,17 +68,41 @@
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-200">
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                                Title
+                                <a href="{{ url_for('index', sort='title', order='desc' if current_sort == 'title' and current_order == 'asc' else 'asc') }}" class="flex items-center hover:text-indigo-600">
+                                    Title
+                                    {% if current_sort == 'title' %}
+                                        <span class="ml-1 text-indigo-600">{{ '↓' if current_order == 'asc' else '↑' }}</span>
+                                    {% endif %}
+                                </a>
                             </th>
+                            
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                                Type
+                                <a href="{{ url_for('index', sort='type', order='desc' if current_sort == 'type' and current_order == 'asc' else 'asc') }}" class="flex items-center hover:text-indigo-600">
+                                    Type
+                                    {% if current_sort == 'type' %}
+                                        <span class="ml-1 text-indigo-600">{{ '↓' if current_order == 'asc' else '↑' }}</span>
+                                    {% endif %}
+                                </a>
                             </th>
+                            
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                                Year
+                                <a href="{{ url_for('index', sort='year', order='desc' if current_sort == 'year' and current_order == 'asc' else 'asc') }}" class="flex items-center hover:text-indigo-600">
+                                    Year
+                                    {% if current_sort == 'year' %}
+                                        <span class="ml-1 text-indigo-600">{{ '↓' if current_order == 'asc' else '↑' }}</span>
+                                    {% endif %}
+                                </a>
                             </th>
+                            
                             <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                                Author(s)
+                                <a href="{{ url_for('index', sort='author', order='desc' if current_sort == 'author' and current_order == 'asc' else 'asc') }}" class="flex items-center hover:text-indigo-600">
+                                    Author(s)
+                                    {% if current_sort == 'author' %}
+                                        <span class="ml-1 text-indigo-600">{{ '↓' if current_order == 'asc' else '↑' }}</span>
+                                    {% endif %}
+                                </a>
                             </th>
+
                              <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                 category(s)
                             </th>

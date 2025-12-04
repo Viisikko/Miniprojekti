@@ -8,8 +8,17 @@ def add_reference(index,title,type,year,author,organization,isbn,doi,url,publish
 
     return db_helper.last_insert_id()
 
-def get_all_references():
-    sql = "SELECT * FROM viitteet ORDER BY id"
+def get_all_references(sort_by="id", order="asc"):
+    valid_sort_columns = ["id", "title", "type", "year", "author"]
+    
+    if sort_by not in valid_sort_columns:
+        sort_by = "id"
+
+    if order.lower() != "desc":
+        order = "asc"
+
+    sql = f"SELECT * FROM viitteet ORDER BY {sort_by} {order}"
+    
     return db_helper.query(sql)
 
 def delete_reference(ref_id):

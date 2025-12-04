@@ -25,13 +25,21 @@ def require_login():
 @require_login()
 def index():
     search_query = ""
+    
+    sort_by = request.args.get("sort", "id")
+    order = request.args.get("order", "asc")
+
     if request.args.get("q"):
         search_query = request.args.get("q")
         references_list = references.search_references(search_query)
     else:
-        references_list = references.get_all_references()
+        references_list = references.get_all_references(sort_by, order)
 
-    return render_template("index.html", references=references_list, search_query=search_query)
+    return render_template("index.html", 
+                           references=references_list, 
+                           search_query=search_query,
+                           current_sort=sort_by,
+                           current_order=order)
 
 
 @app.route("/", methods=["POST"])
