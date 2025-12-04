@@ -100,7 +100,7 @@ def create_reference():
 
     def to_strval(x): return x if x != None else ""
     search_str = ' '.join(
-        f"{title} {author.replace(",", " ")} {year} {to_strval(journal)} {to_strval(publisher)} {to_strval(booktitle)}".strip().split())
+        f"{title} {author.replace(",", " ")} {year} {to_strval(journal)} {to_strval(publisher)} {to_strval(booktitle)} {category.replace(",", " ")}".strip().split())
 
     match reference_type:
         case "book":
@@ -277,7 +277,7 @@ def update_reference():
 
     def to_strval(x): return x if x != None else ""
     search_str = ' '.join(
-        f"{title} {author.replace(",", " ")} {year} {to_strval(journal)} {to_strval(publisher)} {to_strval(booktitle)}".strip().split())
+        f"{title} {author.replace(",", " ")} {year} {to_strval(journal)} {to_strval(publisher)} {to_strval(booktitle)} {category.replace(",", " ")}".strip().split())
 
     match reference_type:
         case "book":
