@@ -43,6 +43,36 @@ Create Reference With Valid Data and search
     Page Should not contain  2020
     Page Should contain  2010
     
+Create Reference And Search By Category
+    Go To Add Reference Page
+    Fill Form With Category
+    ...    title=Category Test One
+    ...    type=book
+    ...    year=2018
+    ...    author=Author One
+    ...    index=CatTestOne2018
+    ...    category=alpha
+    Submit Reference Form Normally
+    Wait Until Location Is    ${HOME_URL}/    5s
+    Page Should Contain    Category Test One
+
+    Go To Add Reference Page
+    Fill Form With Category
+    ...    title=Category Test Two
+    ...    type=book
+    ...    year=2019
+    ...    author=Author Two
+    ...    index=CatTestTwo2019
+    ...    category=beta
+    Submit Reference Form Normally
+    Wait Until Location Is    ${HOME_URL}/    5s
+    Page Should Contain    Category Test Two
+
+    Search with name
+    ...    search=alpha
+
+    Page Should Contain    Category Test One
+    Page Should Not Contain    Category Test Two
 
 
 *** Keywords ***

@@ -21,6 +21,25 @@ Create Reference With Valid Data
     Wait Until Location Is    ${HOME_URL}/    5s
     Page Should Not Contain    Error:
 
+Create Reference With Category
+    ${rand}=    Evaluate    __import__('uuid').uuid4().hex[:6]
+    ${title}=   Set Variable    Category Test ${rand}
+    ${index}=   Set Variable    category-${rand}
+    ${category}=    Set Variable    testing-category-${rand}
+
+    Go To Add Reference Page
+    Fill Reference Form
+    ...    title=${title}
+    ...    type=book
+    ...    year=2015
+    ...    author=Some Author
+    ...    index=${index}
+    Input Text    name:category    ${category}
+    Submit Reference Form Normally
+    Wait Until Location Is    ${HOME_URL}/    5s
+    Page Should Contain    ${title}
+    Page Should Contain    ${category}
+
 Create Reference Fails With Empty Title
     [Documentation]    Backend should reject empty title (after strip()).
     Go To Add Reference Page
