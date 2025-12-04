@@ -23,6 +23,25 @@ Create Reference With Valid Data and Check Correct Data On Home Page
     Page Should Contain  2010
     Page Should Contain  Marti A. Robot
 
+Create Reference With Valid Data and Check Correct Data On Home Page with category
+    Go To Add Reference Page
+    Fill form With Category
+    ...    title=Clean category
+    ...    type=book
+    ...    year=2011
+    ...    author=Marti A. category
+    ...    index=MartiA.category
+    ...    category=testing category
+
+    Submit Reference Form Normally
+    Wait Until Location Is    ${HOME_URL}/    5s
+    Page Should Contain  Clean category
+    Page Should Contain  book
+    Page Should Contain  2011
+    Page Should Contain  Marti A. category
+    Page Should Contain  testing category
+
+
 *** Keywords ***
 Go To Add Reference Page
     Go To    ${HOME_URL}/login
@@ -40,6 +59,15 @@ Fill Reference Form
     Input Text    name:year      ${year}
     Input Text    name:author    ${author}
     Input Text    name:index     ${index}
+
+Fill Form With Category
+    [Arguments]    ${title}    ${type}    ${year}    ${author}    ${index}  ${category}
+    Input Text    name:title     ${title}
+    Select From List By Value    name:type    ${type}
+    Input Text    name:year      ${year}
+    Input Text    name:author    ${author}
+    Input Text    name:index     ${index}
+    Input Text    name:category     ${category}
 
 Submit Reference Form Normally
     [Documentation]    Normal submit – HTML5 validation active.
