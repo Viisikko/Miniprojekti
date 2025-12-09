@@ -100,6 +100,11 @@
         </div>
       </div>
 
+      <div class="doi-warning" show="false">
+      Warning, there is an existing reference with the same DOI already. 
+      DOI is a unique identifier for publications, so duplicates are not permitted.
+      </div>
+
       <div>
         <span>URL</span>
         <input type="text" name="url" value="{{(ref["uri"] if ref["uri"]) if edit_mode else "" }}" />

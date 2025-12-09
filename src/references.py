@@ -35,6 +35,12 @@ def get_reference_by_index(ref_index):
     result = db_helper.query(sql, {"index": ref_index})
     return result[0] if result else None
 
+def get_reference_by_doi(doi):
+    sql = "SELECT * FROM viitteet WHERE doi = :doi"
+    result = db_helper.query(sql, {"doi": doi})
+    return result[0] if result else None
+
+
 def search_references(search_terms):
     sql = "SELECT * FROM viitteet WHERE hakuvektori @@ websearch_to_tsquery('simple', :search_terms)"
     return db_helper.query(sql, {"search_terms": search_terms})

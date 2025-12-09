@@ -34,7 +34,7 @@ form.add_reference {
     }
     
 
-    div:not(.action-button){
+    div:not(.action-button, .doi-warning){
         @apply flex flex-col;
 
         input,
@@ -81,3 +81,22 @@ form.login{
         @apply p-1 bg-white px-6 py-3 bg-white text-black rounded-lg hover:bg-gray-50 transition-colors shadow-sm font-medium cursor-pointer;
     }
 }
+
+
+.doi-warning{
+    @apply hidden border-2 border-red-500 bg-red-200 p-1 sm:max-w-96;
+}
+
+.doi-warning[show="true"]{
+    @apply block;
+}
+
+
+
+
+
+
+
+
+
+

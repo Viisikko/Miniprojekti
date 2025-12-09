@@ -52,7 +52,12 @@ async function autofill_doi() {
         return
     }
 
+    
     let api_json = await res.json()
+    
+    
+    document.querySelector("div.doi-warning").setAttribute("show", api_json["existing"])
+
     if(api_json["authors"] != null){
         api_json["authors"] = api_json["authors"].join(", ")
     }
@@ -63,6 +68,7 @@ async function autofill_doi() {
     autofill_field("journal", api_json)
     autofill_field("publisher", api_json)
     autofill_field("author", api_json)
+    autofill_field("doi", api_json)
 
     generate_index_request()
 

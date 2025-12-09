@@ -699,6 +699,9 @@
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
   }
+  .ml-1 {
+    margin-left: calc(var(--spacing) * 1);
+  }
   .ml-2 {
     margin-left: calc(var(--spacing) * 2);
   }
@@ -2708,6 +2711,13 @@
       }
     }
   }
+  .hover\:text-indigo-600 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-indigo-600);
+      }
+    }
+  }
   .hover\:text-indigo-900 {
     &:hover {
       @media (hover: hover) {
@@ -3055,7 +3065,7 @@ form.add_reference {
     flex-direction: row;
     gap: calc(var(--spacing) * 2);
   }
-  div:not(.action-button) {
+  div:not(.action-button, .doi-warning) {
     display: flex;
     flex-direction: column;
     input, select, div > input {
@@ -3149,6 +3159,20 @@ form.login {
       }
     }
   }
+}
+.doi-warning {
+  display: none;
+  border-style: var(--tw-border-style);
+  border-width: 2px;
+  border-color: var(--color-red-500);
+  background-color: var(--color-red-200);
+  padding: calc(var(--spacing) * 1);
+  @media (width >= 40rem) {
+    max-width: calc(var(--spacing) * 96);
+  }
+}
+.doi-warning[show="true"] {
+  display: block;
 }
 @property --tw-translate-x {
   syntax: "*";

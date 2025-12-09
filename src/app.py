@@ -121,6 +121,9 @@ def create_reference():
     if references.get_reference_by_index(index) != None:
         return "Error: Index must be unique", 400
 
+    if (doi != "") and (references.get_reference_by_doi(doi) != None):
+        return "Error: DOI must be unique", 400
+
     reference_id = None
 
     def to_strval(x): return x if x != None else ""
@@ -190,13 +193,17 @@ def get_metadata():
         except requests.exceptions.JSONDecodeError:
             return "external api responded with invalid data", 500
 
+        existing = references.get_reference_by_doi(doi)
+
         return {
             "author": list(map(lambda x: f"{x["given"]} {x["family"]}", api_json["author"])) if ("author" in api_json) and (api_json["author"] != None) else [],
             "publisher": api_json["publisher"],
             "title": api_json["title"][0] if len(api_json["title"]) > 0 else None,
             "year": api_json["published"]["date-parts"][0][0] if ("date-parts" in api_json["published"]) and (len(api_json["published"]["date-parts"]) > 0) else None,
             "journal": api_json["container-title"][0] if ("container-title" in api_json) and (len(api_json["container-title"]) > 0) else None,
-            "url": api_json["link"][0]["URL"] if len(api_json["link"]) > 0 else None
+            "url": api_json["link"][0]["URL"] if len(api_json["link"]) > 0 else None,
+            "doi":doi,
+            "existing": existing != None
         }
 
     return "invalid request", 400
@@ -309,6 +316,7 @@ def update_reference():
     # Haetaan kannasta viitteen tiedot, sekä mahdolliset pyydetyn indeksin omaava viite
     references_by_index = references.get_reference_by_index(index)
     references_by_id = references.get_reference_by_id(ref_id)
+    references_by_doi = references.get_reference_by_doi(doi)
 
     if references_by_id == None:
         return "Error: Not a valid reference id", 400
@@ -320,6 +328,10 @@ def update_reference():
     if references_by_index != None:
         if references_by_id["id"] != references_by_index["id"]:
             return "Error: Index must be unique", 400
+        
+    if references_by_doi != None:
+        if references_by_id["id"] != references_by_doi["id"]:
+            return "Error: DOI must be unique", 400
 
     # Muutetaan author-string listaksi tietokantaa varten (kuten create-funktiossa)
     author_list = list(map(lambda x: x.strip(), author.split(",")))

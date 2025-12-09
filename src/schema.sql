@@ -13,7 +13,7 @@ CREATE TABLE viitteet (
   booktitle TEXT, 
 
   /* Erinäiset tunnisteet */
-  doi TEXT,
+  doi TEXT UNIQUE,
   isbn TEXT,
   organization TEXT,
   uri TEXT,
