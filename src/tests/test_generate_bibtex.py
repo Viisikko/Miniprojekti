@@ -64,7 +64,8 @@ class TestRowToBibtex(unittest.TestCase):
 
 class TestExportViitteetToBibtex(unittest.TestCase):
     @patch("generate_bibtex.query")
-    def test_export_without_filters(self, mock_query):
+    def test_export_without_references_list(self, mock_query):
+        """Test export when no references_list is provided - should query database"""
         mock_query.return_value = [
             {
                 "id": 1,
@@ -97,22 +98,73 @@ class TestExportViitteetToBibtex(unittest.TestCase):
         self.assertIn("@book{B2,", content)
 
     @patch("generate_bibtex.query")
-    def test_export_with_where_clause_and_params(self, mock_query):
-        mock_query.return_value = []
+    def test_export_with_references_list(self, mock_query):
+        """Test export when references_list is provided - should not query database"""
+        references_list = [
+            {
+                "id": 3,
+                "type": "article",
+                "index": "Filtered1",
+                "year": 2022,
+                "title": "Filtered Article",
+                "author": ["Jane Smith"],
+                "journal": "Science",
+            },
+        ]
 
-        content = generate_bibtex.export_viitteet_to_bibtex(
-            where_clause="year >= :min_year",
-            params={"min_year": 2020},
-        )
+        content = generate_bibtex.export_viitteet_to_bibtex(references_list)
 
-        expected_sql = "SELECT * FROM viitteet WHERE year >= :min_year ORDER BY id"
+        # Should NOT call query since we provided a list
+        mock_query.assert_not_called()
 
-        mock_query.assert_called_once_with(
-            expected_sql,
-            {"min_year": 2020},
-        )
+        self.assertIn("@article{Filtered1,", content)
+        self.assertIn("author = {Jane Smith}", content)
+        self.assertIn("journal = {Science}", content)
+
+    @patch("generate_bibtex.query")
+    def test_export_with_empty_references_list(self, mock_query):
+        """Test export with empty references_list returns empty content"""
+        content = generate_bibtex.export_viitteet_to_bibtex([])
+
+        # Should NOT call query
+        mock_query.assert_not_called()
 
         self.assertIn(content, ("", "\n"))
+
+    @patch("generate_bibtex.query")
+    def test_export_with_filtered_references(self, mock_query):
+        """Test export with multiple filtered references"""
+        filtered_refs = [
+            {
+                "id": 10,
+                "type": "book",
+                "index": "Smith2020",
+                "year": 2020,
+                "title": "Python Programming",
+                "author": ["John Smith", "Alice Brown"],
+                "publisher": "Tech Books",
+            },
+            {
+                "id": 15,
+                "type": "article",
+                "index": "Doe2021",
+                "year": 2021,
+                "title": "AI Research",
+                "author": ["Jane Doe"],
+                "doi": "10.1234/ai.2021",
+            },
+        ]
+
+        content = generate_bibtex.export_viitteet_to_bibtex(filtered_refs)
+
+        mock_query.assert_not_called()
+
+        entries = [e for e in content.strip().split("\n\n") if e.strip()]
+        self.assertEqual(len(entries), 2)
+        self.assertIn("@book{Smith2020,", content)
+        self.assertIn("author = {John Smith and Alice Brown}", content)
+        self.assertIn("@article{Doe2021,", content)
+        self.assertIn("doi = {10.1234/ai.2021}", content)
 
 
 if __name__ == "__main__":
