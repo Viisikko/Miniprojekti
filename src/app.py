@@ -296,6 +296,9 @@ def update_reference():
     publisher = get_param("publisher")
     category = get_param("category")
 
+    if doi == "":
+        doi = None
+
     # --- SAMA VALIDOINTI KUIN CREATE_REFERENCE ---
     if not title or len(title) > 512:
         return "Error: Title must be between 1 and 512 characters.", 400
@@ -319,7 +322,9 @@ def update_reference():
     # Haetaan kannasta viitteen tiedot, sekä mahdolliset pyydetyn indeksin omaava viite
     references_by_index = references.get_reference_by_index(index)
     references_by_id = references.get_reference_by_id(ref_id)
-    references_by_doi = references.get_reference_by_doi(doi)
+    references_by_doi = None
+    if doi != None:
+        references_by_doi = references.get_reference_by_doi(doi)
 
     if references_by_id == None:
         return "Error: Not a valid reference id", 400
