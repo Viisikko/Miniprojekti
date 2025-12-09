@@ -99,6 +99,9 @@ def create_reference():
     publisher = get_param("publisher")
     category = get_param("category")
 
+    if doi == "":
+        doi = None
+
     if not title or len(title) > 512:
         return "Error: Title must be between 1 and 512 characters.<br> <a href='/add_reference'>Return to reference creation</a>", 400
 
@@ -121,7 +124,7 @@ def create_reference():
     if references.get_reference_by_index(index) != None:
         return "Error: Index must be unique", 400
 
-    if (doi != "") and (references.get_reference_by_doi(doi) != None):
+    if (doi != None) and (references.get_reference_by_doi(doi) != None):
         return "Error: DOI must be unique", 400
 
     reference_id = None
