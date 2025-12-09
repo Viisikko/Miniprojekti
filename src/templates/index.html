@@ -39,7 +39,7 @@
                     <p>Choose an action:</p>
                     
                     <div class="modal-actions">
-                        <a href="/export_bibtex" class="modal-btn primary" onclick="closeBibtexModal()">
+                        <a href="/export_bibtex{% if search_query %}?q={{ search_query | urlencode }}{% endif %}" class="modal-btn primary" onclick="closeBibtexModal()">
                             Download File
                         </a>
                         

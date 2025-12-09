@@ -56,18 +56,13 @@ def row_to_bibtex(row: dict) -> str:
 
 
 def export_viitteet_to_bibtex(
-    where_clause: str | None = None,
-    params: dict | None = None,
+    references_list: list | None = None,
 ) -> str:
-    sql = "SELECT * FROM viitteet"
-
-    # Tää johtaa SQL-injektioon jos where_clause on käyttäjän hallittavissa
-    # Filtteröintiä varten jatkossa
-    if where_clause:
-        sql += " WHERE " + where_clause
-    sql += " ORDER BY id"
-
-    rows = query(sql, params or {})
+    if references_list is None:
+        sql = "SELECT * FROM viitteet ORDER BY id"
+        rows = query(sql, {})
+    else:
+        rows = references_list
 
     entries = [row_to_bibtex(row) for row in rows] # type: ignore
     content = "\n\n".join(entries) + ("\n" if entries else "")

@@ -18,7 +18,10 @@ async function copyBibtexToClipboard() {
     const originalText = copyBtn.innerText;
 
     try {
-        const response = await fetch('/export_bibtex');
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('q');
+        const exportUrl = searchQuery ? `/export_bibtex?q=${encodeURIComponent(searchQuery)}` : '/export_bibtex';
+        const response = await fetch(exportUrl);
         if (!response.ok) throw new Error('Network response was not ok');
         const bibtexText = await response.text();
 

@@ -24,12 +24,10 @@ def require_login():
 @app.route("/")
 @require_login()
 def index():
-    search_query = ""
-
     sort_by = request.args.get("sort", "id")
     order = request.args.get("order", "asc")
 
-    search_query = request.args.get("q")
+    search_query = request.args.get("q") or ""
 
     if search_query:
         def tag_AND_compare(reftags, tags):
@@ -206,7 +204,32 @@ def get_metadata():
 
 @app.route('/export_bibtex')
 def export_bibtex():
-    bibtex_string = generate_bibtex.export_viitteet_to_bibtex()
+    # Indexin hakulogiikka kopioitu tähän
+    search_query = request.args.get("q")
+
+    if search_query:
+        def tag_AND_compare(reftags, tags):
+            for i in tags:
+                if not i[4:] in reftags:
+                    return False
+            return True
+
+        tag_search_expression = r"tag\:\w+"
+
+        tags = re.findall(tag_search_expression, search_query)
+        cleaned_search_query = re.sub(tag_search_expression, '', search_query).strip()
+
+        if cleaned_search_query == "":
+            references_list = references.get_all_references()
+        else:
+            references_list = references.search_references(cleaned_search_query)
+
+        if len(tags) > 0:
+            references_list = list(filter(lambda x: tag_AND_compare(x["category"], tags), references_list))
+    else:
+        references_list = references.get_all_references()
+
+    bibtex_string = generate_bibtex.export_viitteet_to_bibtex(references_list)
     return Response(
         bibtex_string,
         mimetype="text/plain",
