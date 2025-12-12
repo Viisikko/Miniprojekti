@@ -1,5 +1,5 @@
 # Miniprojekti
-
+[![CI](https://github.com/Viisikko/Miniprojekti/actions/workflows/main.yml/badge.svg)](https://github.com/Viisikko/Miniprojekti/actions/workflows/main.yml)
 ## Linkkejä
 Linkki backlogiin
 https://github.com/orgs/Viisikko/projects/1
