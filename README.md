@@ -6,6 +6,8 @@ https://github.com/orgs/Viisikko/projects/1
 <br>
 Linkki demoon
 https://limousines-bless-bag-memory.trycloudflare.com/login
+<br>
+Tunnukset demoon: `outi:13740f660f57f97b`
 
 ## Definition of done:
 - sovellus käynnistyy ilman virheitä
