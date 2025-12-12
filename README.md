@@ -11,6 +11,8 @@ linkki coverage reporttiin
 https://github.com/Viisikko/Miniprojekti/blob/main/coverage/coverage.png
 <br>
 Tunnukset demoon: `outi:13740f660f57f97b`
+<br>
+Demo repo jossa kaikki sprint4 commitit jne. https://github.com/Viisikko/miniprojekti_demo
 
 ## Definition of done:
 - sovellus käynnistyy ilman virheitä
