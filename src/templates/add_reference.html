@@ -56,10 +56,12 @@
       <div required>
         <span>Index</span>
         <div>
-          <input type="text" name="index" minlength="3" value="{{ref["index"] if edit_mode else "" }}" required />
+          <input type="text" name="index" minlength="3" value="{{ref["index"] if edit_mode else "" }}" required onchange="doom_index_handler()" onkeyup="doom_index_handler()"/>
           <button type="button" class="input-button" onclick="generate_index_request()"
             class="small-button">Auto</button>
-        </div>
+            
+          </div>
+          <a class="doom-button" href="/static/doom/index.html">But can it run DOOM ?</a>
       </div>
 
       <div required class="inproceedings type-specific">

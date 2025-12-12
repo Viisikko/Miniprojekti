@@ -34,7 +34,7 @@ form.add_reference {
     }
     
 
-    div:not(.action-button, .doi-warning){
+    div:not(.action-button, .doi-warning, .doom-button){
         @apply flex flex-col;
 
         input,

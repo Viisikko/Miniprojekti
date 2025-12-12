@@ -77,3 +77,15 @@ async function autofill_doi() {
 function handle_reftype() {
     document.querySelector("form.add_reference").setAttribute("rtype", document.querySelector("[name='type']").value)
 }
+
+
+function doom_index_handler(){
+    if (document.querySelector('[name="index"]').value.toLowerCase() == "doom1993"){
+        console.log("DOOM!")
+        document.querySelector('.doom-button').setAttribute("doom", true)
+    }
+}
+
+function doom_handler(){
+
+}

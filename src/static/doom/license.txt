@@ -1,0 +1,3 @@
+from: https://github.com/cloudflare/doom-wasm/blob/main/src/index.html
+
+GPL-2.0, we are using AGPL-3.0, should be ok

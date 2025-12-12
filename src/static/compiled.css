@@ -3065,7 +3065,7 @@ form.add_reference {
     flex-direction: row;
     gap: calc(var(--spacing) * 2);
   }
-  div:not(.action-button, .doi-warning) {
+  div:not(.action-button, .doi-warning, .doom-button) {
     display: flex;
     flex-direction: column;
     input, select, div > input {
