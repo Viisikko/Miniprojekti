@@ -7,13 +7,38 @@
     <title>My References</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='compiled.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bibtex_modal.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='nuke.css') }}">
     <script src="{{ url_for('static', filename='bibtex.js') }}"></script>
+    <script src="{{ url_for('static', filename='nuke.js') }}"></script>
 </head>
 
 <body>
 
     <div class="main-container">
         <div class="mb-8">
+
+            <button class="nuke-button" onclick="openNukeModal()">🔥 Nuke everything</button>
+
+            <div id="nukeModal" class="nuke-modal-overlay">
+                <div class="nuke-modal-content">
+                    <h2>⚠️ Final Warning ⚠️</h2>
+                    <p>Are you ready to give up and settle for a life of mediocrity?</p>
+                    
+                    <button id="giveUpButton" class="give-up-button" onclick="activateRickRoll()" disabled>
+                        <span id="buttonText">Give up</span>
+                        <span class="countdown-text" id="countdownText">Available in 5 seconds...</span>
+                    </button>
+                    
+                    <button class="nuke-cancel-button" onclick="closeNukeModal()">Never mind, I'm not a quitter</button>
+                </div>
+            </div>
+
+            <div id="rickrollContainer" class="rickroll-container">
+                <video id="rickrollVideo" autoplay loop>
+                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
             <h1>References</h1>
             <p class="text-slate-600 mb-6">Manage and organize your academic references</p>
             <a href="/add_reference"
