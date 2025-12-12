@@ -7,6 +7,9 @@ https://github.com/orgs/Viisikko/projects/1
 Linkki demoon
 https://limousines-bless-bag-memory.trycloudflare.com/login
 <br>
+linkki coverage reporttiin
+https://github.com/Viisikko/Miniprojekti/blob/main/coverage/coverage.png
+<br>
 Tunnukset demoon: `outi:13740f660f57f97b`
 
 ## Definition of done:
