@@ -14,6 +14,8 @@ https://github.com/Viisikko/Miniprojekti/blob/main/coverage/coverage.png
 Tunnukset demoon: `outi:13740f660f57f97b`
 <br>
 Demo repo jossa kaikki sprint4 commitit jne. https://github.com/Viisikko/miniprojekti_demo
+<br>
+Ryhmän raportti https://github.com/Viisikko/Miniprojekti/blob/main/Viisikko_miniprojekti_raportti.pdf
 
 ## Definition of done:
 - sovellus käynnistyy ilman virheitä
